@@ -1,0 +1,14 @@
+i/o redirection
+
+
+
+change name from main to myshell
+
+
+references:
+https://www.csl.mtu.edu/cs4411.ck/www/NOTES/process/fork/exec.html - fork and exec explanation
+
+man execvp
+getcwd
+setenv
+freopen

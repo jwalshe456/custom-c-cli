@@ -9,18 +9,17 @@ can use redirected input if the first token is a recognised internal command,
 then that command is executed. otherwise the tokens are printed on the display.
 
 internal commands:
-clear - clears the screen
+
+dir - outputs contents of specified directory, current directory by default
+cd - changes to specified directory, unless none is specified, prints out current directory
+environ - prints out all environment variables
+clr - clears the screen
+echo - prints following statement to stdout
+pause - ceases activity of shell until 'Enter' is pressed
+help -
 quit - exits from the program
+
 ********************************************************************
-version: 1.0
-date:    December 2003
-author:  Ian G Graham
-School of Information Technology
-Griffith University, Gold Coast
-ian.graham@griffith.edu.au
-copyright (c) Ian G Graham, 2003. All rights reserved.
-This code can be used for teaching purposes, but no warranty,
-explicit or implicit, is provided.
 *******************************************************************/
 
 
@@ -39,13 +38,15 @@ explicit or implicit, is provided.
 
 pid_t waitpid(pid_t pid, int *status_ptr, int options);
 char *getcwd(char *buf, size_t size);
-char *getwd(char *buf);
-char *get_current_dir_name(void);
+void use_batch_mode(char *argv);
 void fork_exec(char **args);
 void syserr(char * msg);
-void set_shell_env(void);
+void set_shell_env(char *program_name);
+int run_command(char **args, bool valid);
 
 extern char **environ;
+char dir_buf[MAX_BUFFER];
+bool paused = false;
 
 int main (int argc, char ** argv)
 {
@@ -55,7 +56,17 @@ int main (int argc, char ** argv)
     char **arg;                               // working pointer thru args
     char *prompt = "~~>";               // shell prompt
     bool valid;
-    set_shell_env();
+    
+    // set the shell env variable to this program
+    set_shell_env(argv[0]);
+    
+    // check for batchfile
+    if (argv[1]){
+
+        use_batch_mode(argv[1]);
+
+        return 0;
+    }
     /* keep reading input until "quit" command or eof of redirected input */
 
     while (!feof(stdin)) { 
@@ -67,62 +78,26 @@ int main (int argc, char ** argv)
             arg = args;
             *arg++ = strtok(buf, SEPARATORS);   // tokenise input
 
-            while ((*arg++ = strtok(NULL,SEPARATORS)));
-
             // last entry will be NULL
+            while ((*arg++ = strtok(NULL,SEPARATORS)));
+            
 
-            if (args[0]) {                     // if there's anything there
-                /* check for internal/external command */
+            if (args[0] && !paused) { // potential command on command line
+
+                // assume command to be invalid, until checked by run_command
                 valid = false;
-                if (!strcmp(args[0],"quit"))   // "quit" command
-                    exit(0);                     // break out of 'while' loop
-                
-                if (!strcmp(args[0],"dir")){   // "dir" alias
-                    args[0] = "ls";
-                    valid = true;
-                }
-                
-                if (!strcmp(args[0],"clear")) { // "clear" command
-                    valid = true;
-                    
-                }
 
-                if (!strcmp(args[0],"environ")){   // "environ" alias
-
-                    args[0] = "env";
-                    valid = true;
-                }
-
-                if (!strcmp(args[0],"cd")){   // "cd" command
-                    if (args[1]){
-
-                        chdir(args[1]);
-                        char *cwd = getcwd(buf, MAX_BUFFER);
-                        setenv("PWD", cwd, 1);
-                    }
-                    fprintf(stdout, "%s\n", getcwd(buf, MAX_BUFFER));
-                    
-                    continue;
-                }
-                /*
-                */
-                // check if file in args
-                // check if input
-                // check if output
-                // check if append
-
-                if (valid){
-                    fork_exec(args);
-                }
-                /* else pass command onto OS (or in this instance, print them out) */
-                else{
-
+                // if command is invalid, print it out to stdout
+                if (run_command(args, valid)!= 0) {
                     arg = args;
                     while (*arg) {
                         fprintf(stdout,"%s ",*arg++);
                         fputs ("\n", stdout);
                     }
                 }
+            }
+            else if (!args[0]) {
+                paused = false;
             }
         }
     }
@@ -153,11 +128,70 @@ void fork_exec(char **args){
     }
 }
 
-void set_shell_env(void){
+void set_shell_env(char *program_name){
     
     char *PATH = malloc(MAX_BUFFER*sizeof(char));
-    PATH = realpath("./main.c", PATH);            
+    PATH = realpath(program_name, PATH);            
     setenv("SHELL", PATH, 1);
     PATH = NULL;
     free(PATH);
+}
+
+void use_batch_mode(char *argv){
+    //read each line of file and execute as normal
+}
+
+int run_command(char **args, bool valid){
+    //check aliases and validity, make changes if need be
+    if (!strcmp(args[0],"quit"))   // "quit" command
+        exit(0);                     // break out of 'while' loop
+                
+    if (!strcmp(args[0],"dir")){   // "dir" alias
+        args[0] = "ls";
+        valid = true;
+    }
+     
+    if (!strcmp(args[0],"clr")) { // "clear" command
+        args[0] = "clear";
+        valid = true;  
+    }
+
+    if (!strcmp(args[0],"environ")){   // "environ" alias
+        args[0] = "env";
+        valid = true;
+    }
+    if (!strcmp(args[0],"echo")){   // "environ" alias
+        valid = true;
+    }
+    if (!strcmp(args[0],"pause")){   // "environ" alias
+        paused = true;
+        return 0;
+    }
+
+    if (!strcmp(args[0],"cd")){   // "cd" command
+         char *cwd = getcwd(dir_buf, MAX_BUFFER);
+         if (args[1]){
+             chdir(args[1]);
+             setenv("OLDPWD", cwd, 1);
+             cwd = getcwd(dir_buf, MAX_BUFFER);
+             
+             setenv("PWD", cwd, 1);
+        }
+        fprintf(stdout, "%s\n", cwd);
+        return 0;
+    }
+                // check if file in args
+                // check if input
+                // check if output
+                // check if append
+
+    //call fork_and_exec if valid
+    if (valid){
+        fork_exec(args);
+        return 0;
+    }
+
+
+    //if not valid return non-zero
+    return 1;
 }
