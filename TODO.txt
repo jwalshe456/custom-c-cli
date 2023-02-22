@@ -1,14 +1,22 @@
-i/o redirection
 
 
+-i/o redirection freopen
 
-change name from main to myshell
+-change name from main to myshell
 
+-readme/write manual
+
+-help command
+
+-split program into multiple files
+	-internal commands/fork_exec
+	-setup commands (set_shell_env, use_batch_mode)
+	-i/o redirection
 
 references:
-https://www.csl.mtu.edu/cs4411.ck/www/NOTES/process/fork/exec.html - fork and exec explanation
+	https://www.csl.mtu.edu/cs4411.ck/www/NOTES/process/fork/exec.html - fork and exec explanation
 
-man execvp
-getcwd
-setenv
-freopen
+	man execvp
+	getcwd
+	setenv
+	freopen
