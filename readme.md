@@ -1,18 +1,58 @@
-# CA216 Operating Systems: myshell
+# myshell
 
-## Introduction
+*myshell* is a program which acts as a shell, or command line interpreter. A shell is an interface for users to interact with their machine's OS. *myshell* can handle a number of commands, I/O redirection and background execution.
 
-This is the starter repository for the _ca216 Operating Systems_ project entitled `myshell` and which you must complete individually.
+A seperate text file containing much of the following information can be obtained after running the program by simply typing:
+```
+help
+```  
 
-## What you need to do
+## Supported Commands
+
+UNIX commands are mostly supported, though the following commands act as aliases or differ in function from their standards:
+
+* ___dir___ - outputs contents of specified directory, current directory by default  
+* ___cd___ - changes to specified directory, unless none is specified, prints out current directory  
+* ___environ___ - prints out all environment variables  
+* ___clr___ - clears the screen  
+* ___echo___ - prints following statement to stdout  
+* ___pause___ - ceases activity of shell until 'Enter' is pressed  
+* ___help___ - display manual pages  
+* ___quit___ - exits from the program  
+
+For detailed descriptions and syntax of each command type after starting the program:
+``` 
+help commands
+```
+
+## I/O Redirection
+
+I/O redirection is the changing of the input and/or output stream(s) for a file. By default these are ___stdin___ and ___stdout___.  
+An example of I/O redirection is as follows:
+```
+file arg1 arg2 < input.txt > output.txt
+```  
+Here, ___input.txt___ and ___output.txt___ will act as the input and output stream for ___file___ for the duration of the command's execution.
+Another example includes the use of a batchfile, a file containing commands to be run, and acts as the input stream for the shell:
+
+```
+myshell batchfile
+
+```
+
+## Background Execution
+
+Background processes run without any interaction on the users part. This differs from foreground processes.  
+A background process can be executed by invoking "&" after a command, as follows:
+```
+command args &
+```
+
+## Shell
 
 
-You should follow the instructions below:
+## STUDENT DETAILS
 
-1. fork (do not clone) this repository.  Once you have forked it, make your own repository private and add both me (Graham Healy - @healygr) and Wandri Jooste (@joostew2) as "maintainer".
-2. add all your source files to the `src` directory.
-3. Add your files relating to the manual/help command to the `manual` directory.
-4. Your `makefile` should build the binary and place it in the `bin` directory.
 
-## Other notes
-There are supporting exercises to help you with the project.  You will find them all under  [Lab04/05 on the Loop CA216 Site](https://loop.dcu.ie/mod/book/view.php?id=2054177).  Use Git regularly and commit versions of your code often.
+
+## ACKNOWLEDGEMENT

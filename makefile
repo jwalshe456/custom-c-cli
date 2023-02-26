@@ -1,9 +1,9 @@
 
-src=$(wildcard *.c)
-files=$(src:.c= )
+src=$(wildcard ./src/*.c)
+dst=./bin/myshell
 
-build:$(files)
-	@true
+$(dst):$(src)
+	gcc -Wall $(src) -o $(dst)
 
-%:%.c
-	gcc -Wall $< -o $@
+run:$(dst)
+	@$(dst)
