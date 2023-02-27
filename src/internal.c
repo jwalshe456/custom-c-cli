@@ -220,13 +220,14 @@ returns: void
 */
 
 void print_not_valid(char **args){
-    fputs("\"", stdout);
+    fputs("\"", stderr);
     char **arg = args;
     while (*arg) {
-        fprintf(stdout,"%s",*arg++);
+        fprintf(stderr,"%s",*arg++);
         if (*arg){
-            fputs(" ", stdout);
+            fputs(" ", stderr);
         }
     }
-    fputs("\": not a valid command\n", stdout);
+    fputs("\": not a valid command\n", stderr);
+    fprintf(stderr, "type \"help\" for more information\n");
 }
