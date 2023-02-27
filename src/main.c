@@ -1,19 +1,10 @@
 /* 
 
 ********************************************************************
-myshell -  main program to run shell
-    based off of example code by Ian G Graham
-
-internal commands:
-
-dir - outputs contents of specified directory, current directory by default
-cd - changes to specified directory, unless none is specified, prints out current directory
-environ - prints out all environment variables
-clr - clears the screen
-echo - prints following statement to stdout
-pause - ceases activity of shell until 'Enter' is pressed
-help - display manual pages
-quit - exits from the program
+Student Name: Jed Walshe
+Student Number: 21338606
+I acknowledge DCU's Academic Integrity Policy. 
+All code and text submitted is my own, unless stated otherwise, in such case it is properly referenced.
 
 ********************************************************************
 

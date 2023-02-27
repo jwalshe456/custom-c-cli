@@ -1,3 +1,15 @@
+/* 
+
+********************************************************************
+Student Name: Jed Walshe
+Student Number: 21338606
+I acknowledge DCU's Academic Integrity Policy. 
+All code and text submitted is my own, unless stated otherwise, in such case it is properly referenced.
+
+********************************************************************
+
+*/
+
 // definitions of functions which are handle the "under-the-hood" operation of the shell
 // and any changes made to it and the environment variables
 

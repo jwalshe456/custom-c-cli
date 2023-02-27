@@ -1,3 +1,15 @@
+/* 
+
+********************************************************************
+Student Name: Jed Walshe
+Student Number: 21338606
+I acknowledge DCU's Academic Integrity Policy. 
+All code and text submitted is my own, unless stated otherwise, in such case it is properly referenced.
+
+********************************************************************
+
+*/
+
 // implementation and handling of commands called by users of the shell
 
 #include "internal.h"
