@@ -2,6 +2,7 @@
 
 #include "internal.h"
 #include "env.h"
+#include <signal.h>
 
 // global variables for this file
 extern char **environ; // buffer to hold environment variable string
@@ -19,10 +20,10 @@ returns: int, denotes success
 
 int cd(char *directory){
 
+    char *cwd = getcwd(dir_buf, MAX_BUFFER);
     // ensure directory exists
     if (check_file_type(directory) == IS_DIR){
         
-        char *cwd = getcwd(dir_buf, MAX_BUFFER);
 
         // change directory and set OLDPWD
         chdir(directory); 
@@ -36,9 +37,11 @@ int cd(char *directory){
     else if (directory != NULL){
 
     	fprintf(stdout, "\"%s\": not a directory\n", directory);
-        return -1;
     }
 
+    else{
+        fprintf(stdout, "%s\n", cwd);
+    }
     //update command prompt
     prompt = get_prompt(); 
     return 0;
@@ -57,9 +60,8 @@ char **print_man(char **args){
     
     // default file to be opened
     if(args[1] == NULL){
-        args[1] = "test.txt";
+        args[1] = "readme";
     }
-
 
     // detection of i/o redirection for this command
     int i = 0;

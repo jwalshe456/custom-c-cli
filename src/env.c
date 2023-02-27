@@ -72,6 +72,7 @@ void fork_exec(char **args){
     pid_t p;
     int status;
 
+    // run commands as child process
     switch(p=fork()){
 
         case -1:
@@ -81,9 +82,9 @@ void fork_exec(char **args){
             execvp(args[0], args);
 
         default:
+            //check if shell should wait for process to finish
             if(!dont_wait){
                 waitpid(p, &status, WUNTRACED);
-                dont_wait = false;
             }
     }
 }
@@ -152,6 +153,7 @@ int parse_run(char **args){
     // assume stdin will be changed by default
     int flags = O_RDONLY, stream_fd = STDIN_FILENO;
 
+    // find intent of i/o redirection
     int i = 0, j = 0;
     char *arg;
     while(args[i] != NULL){
