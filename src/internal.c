@@ -2,7 +2,6 @@
 
 #include "internal.h"
 #include "env.h"
-#include <signal.h>
 
 // global variables for this file
 extern char **environ; // buffer to hold environment variable string
@@ -158,7 +157,6 @@ int run_command(char **args){
     if (!strcmp(args[0],"cd")){
         rv = cd(args[1]);
     }
-
 
     // commands with reformatted arguments: help, dir
     if (!strcmp(args[0],"help")){

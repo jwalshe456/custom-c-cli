@@ -23,6 +23,7 @@ void set_shell_env(char *file_name, char *env_name){ //set SHELL environment var
     // get path to file
     path = realpath(file_name, path);
     
+    // set SHELL to path to myshell
     if(setenv(env_name, path, 1)){
         syserr("environment variable couldn't be set");
     }
@@ -50,11 +51,11 @@ char *get_prompt(void){ // get the current directory and update the prompt
 /* 
 function: syserr
 arguments: char* "msg": message to be printed in case of error 
-description: prints error message and exits non-zero
+description: prints error message and aborts shell
 returns: void
 */
 
-void syserr(char * msg)   // report error code and abort
+void syserr(char * msg)
 {
    fprintf(stderr,"%s: %s", strerror(errno), msg);
    exit(-1);
@@ -158,11 +159,14 @@ int parse_run(char **args){
     char *arg;
     while(args[i] != NULL){
         arg = args[i];
+
+        // change stdin
         if(arg[0] == '<'){
             do_shift = true;
     
         }
 
+        // change stdout
         else if(arg[0] == '>'){
             stream_fd = STDOUT_FILENO;
             flags = O_WRONLY|O_CREAT;
@@ -176,20 +180,23 @@ int parse_run(char **args){
                 flags |= O_APPEND;
             }
 
+            // print error message if word begins with > e.g., >myfile
             else{
                 fprintf(stdout, "bad file name: %s\n", arg);
                 return -1;
             }
         }
 
+        // background process invocation
         else if (arg[0] == '&'){
             dont_wait = true;
             args[i] = NULL;
         }
         
+        // change i/o stream
         if (do_shift){
             set_io_stream(args[++i], flags, stream_fd);
-            if (j==0){
+            if (j == 0){
                 j = i;
 
             }
@@ -198,6 +205,7 @@ int parse_run(char **args){
         ++i;
     }
 
+    // clean command line by removing arrows and input/output files
     if (do_shift){
         int k = j - 1;
         while(args[k]){
@@ -207,7 +215,8 @@ int parse_run(char **args){
     }
 
     fork_exec(args);
-    //TODO: change stdin and stdout back
+    
+    // return stdin and stdout to their previous states
     if (do_shift){
         dup2(saved_stdin, STDIN_FILENO);
         dup2(saved_stdout, STDOUT_FILENO);
