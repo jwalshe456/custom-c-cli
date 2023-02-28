@@ -8,10 +8,6 @@ SYNOPSIS
 
 	myshell is a program which acts as a shell, or command line interpreter. A shell is an interface for users to interact with their machine's OS. myshell can handle a number of commands, I/O redirection and background execution.
 
-	A text-editor friendly file containing much of the following information can be obtained after running the program by simply typing:
-
-		help
-
 
 SUPPORTED COMMANDS
 
