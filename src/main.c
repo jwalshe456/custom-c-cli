@@ -69,7 +69,7 @@ int main (int argc, char **argv) {
 
             // if enter key is pressed, unpause shell, does nothing if already unpaused
             else if (!args[0]) {
-                paused = false;
+                switch_pause();
             }
         }
     }

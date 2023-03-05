@@ -22,6 +22,18 @@ bool paused; // variable to check if use of shell should be paused
 char *prompt; // global var for command prompt
 
 /* 
+function: switch_pause
+arguments: void
+description: changes the state of the global paused variable 
+returns: void
+*/
+
+void switch_pause(void){
+
+    paused = !paused;
+}
+
+/* 
 function: cd
 arguments: char* "directory": a named directory
 description: changes directory and sets
@@ -29,7 +41,7 @@ description: changes directory and sets
 returns: int, denotes success
 */
 
-int cd(char *directory){
+int cd(char *directory) {
 
     char *cwd = getcwd(dir_buf, MAX_BUFFER);
     // ensure directory exists
@@ -162,7 +174,7 @@ int run_command(char **args){
         exit(0);
 
     if (!strcmp(args[0],"pause")){
-        paused = true;
+        switch_pause();
         rv = 0;
     }
 

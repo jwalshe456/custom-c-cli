@@ -16,6 +16,8 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 
 // definitions for function used in "myshell",
 // implementation found in "internal.c"
+
+void switch_pause(void);
 int cd(char *dir);
 char **print_man(char **options);
 char **dir(char **args);
