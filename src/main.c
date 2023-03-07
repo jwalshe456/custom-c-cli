@@ -17,11 +17,12 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 #define MAX_ARGS 64          // max # args
 #define SEPARATORS " \t\n"   // token separators
 
-extern char *prompt;
 
 int main (int argc, char **argv) {
 
+    extern char *prompt;
     extern bool paused;
+    extern bool no_prompt;
     bool using_batchfile;
     char buf[MAX_BUFFER];    // line buffer
     char *args[MAX_ARGS];    // pointers to arg strings
@@ -44,14 +45,16 @@ int main (int argc, char **argv) {
 
     // keep reading input until "quit" command or eof of redirected input
     while (!feof(stdin)) { 
-        // get command line from input
-        if(!using_batchfile){
-
+        // if batch file is being used, 
+        // or if a background process has been started
+        // no prompt is needed
+        if(!using_batchfile && !no_prompt){
             fputs(prompt, stdout); // write prompt
         }
+        no_prompt = false;
         
         // read a line
-        if (fgets(buf, MAX_BUFFER, stdin )) {
+        if (fgets(buf, MAX_BUFFER, stdin)) {
             
             arg = args;
             *arg++ = strtok(buf, SEPARATORS);
@@ -68,7 +71,7 @@ int main (int argc, char **argv) {
             }
 
             // if enter key is pressed, unpause shell, does nothing if already unpaused
-            else if (!args[0]) {
+            else if (!args[0] && paused) {
                 switch_pause();
             }
         }

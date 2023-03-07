@@ -19,7 +19,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 extern char **environ; // buffer to hold environment variable string
 extern char dir_buf[MAX_BUFFER]; // original located in env.c
 bool paused; // variable to check if use of shell should be paused
-char *prompt; // global var for command prompt
+extern char *prompt; // global var for command prompt
 
 /* 
 function: switch_pause

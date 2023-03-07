@@ -16,7 +16,10 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 #include "env.h"
 
 char dir_buf[MAX_BUFFER]; // buffer to store current directory
-bool dont_wait;           // flag for background execution, false by default
+char *prompt; // global var for command prompt
+bool no_prompt;
+
+static bool dont_wait;           // flag for background execution, false by default
 
 /* 
 function: set_shell_env
@@ -42,7 +45,6 @@ void set_shell_env(char *file_name, char *env_name){ //set SHELL environment var
     
     path = NULL;
     free(path);
-
 
 }
 
@@ -79,7 +81,6 @@ arguments: char** "args": a list of arguments
 description: handles forking and executing of commands
 returns: void
 */
-
 void fork_exec(char **args){
 
     pid_t p;
@@ -89,9 +90,16 @@ void fork_exec(char **args){
     switch(p=fork()){
 
         case -1:
-            syserr("fork");
+            syserr("bad fork");
 
         case 0:
+
+            if(dont_wait){
+                printf("Process %d running in background...\n", getpid());
+                fputs(prompt, stdout);
+                fflush(stdout);
+            }
+            
             execvp(args[0], args);
 
         default:
@@ -99,6 +107,14 @@ void fork_exec(char **args){
             if(!dont_wait){
                 waitpid(p, &status, WUNTRACED);
             }
+
+            else{
+                dont_wait = false;
+                no_prompt = true;
+                // prevents creation of zombie processes
+                signal(SIGCHLD, SIG_IGN);
+            }
+
     }
 }
 
