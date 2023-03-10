@@ -1,6 +1,6 @@
 
-src=$(wildcard ./src/*.c)
-dst=./bin/myshell
+src=$(wildcard src/*.c)
+dst=bin/myshell
 
 $(dst):$(src)
 	gcc -Wall $(src) -o $(dst)
