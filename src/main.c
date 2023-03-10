@@ -11,7 +11,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 */
 
 // dependencies for main.c
-#include "internal.h"
+#include "built-in.h"
 #include "env.h"
 
 #define MAX_ARGS 64          // max # args

@@ -13,7 +13,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 // implementation and handling of commands called by users of the shell
 
 /* HEADER FILES */
-#include "internal.h"
+#include "built-in.h"
 #include "env.h"
 
 /* GLOBAL VARIABLES */

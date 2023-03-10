@@ -16,7 +16,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 #include <dirent.h>
 
 // definitions for function used in "myshell",
-// implementation found in "internal.c"
+// implementation found in "built-in.c"
 
 /* BUILT-INS */
 void env(void);
