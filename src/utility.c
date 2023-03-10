@@ -13,7 +13,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 // implementations of functions which alter environment variables and prompt
 // contains main built-in libraries to support shell as well as key definitions.
 
-#include "env.h"
+#include "utility.h"
 
 char dir_buf[MAX_BUFFER]; // buffer to store current directory
 char *prompt; // global var for command prompt

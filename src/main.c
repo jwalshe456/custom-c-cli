@@ -12,7 +12,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 
 // dependencies for main.c
 #include "built-in.h"
-#include "env.h"
+#include "utility.h"
 
 #define MAX_ARGS 64          // max # args
 #define SEPARATORS " \t\n"   // token separators

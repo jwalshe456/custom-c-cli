@@ -13,8 +13,8 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 // implementation and handling of commands called by users of the shell
 
 /* HEADER FILES */
-#include "built-in.h"
-#include "env.h"
+#include "built_in.h"
+#include "utility.h"
 
 /* GLOBAL VARIABLES */
 extern char dir_buf[MAX_BUFFER]; // original located in env.c

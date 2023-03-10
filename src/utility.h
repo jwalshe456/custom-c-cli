@@ -28,7 +28,7 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 #define MAX_BUFFER 1024   // max line buffer
 
 // definitions for function used in "myshell",
-// implementation found in "env.c"
+// implementation found in "utility.c"
 void set_shell_env(char *file_name, char *env_name);
 char *get_prompt(void);
 void syserr(char * msg);
