@@ -23,7 +23,6 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 #include <stdbool.h>
 #include <fcntl.h>
 
-
 #define IS_DIR 0          // directory descriptor
 #define IS_EXEC 1         // executable descriptor
 #define MAX_BUFFER 1024   // max line buffer
@@ -36,4 +35,5 @@ void syserr(char * msg);
 void fork_exec(char **args);
 int check_file_type(char* file);
 void set_io_stream(char *file, int flags, int stream_fd);
-int parse_run(char **args);
+char **parse(char **args, int len);
+

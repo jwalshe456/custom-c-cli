@@ -19,7 +19,7 @@ char dir_buf[MAX_BUFFER]; // buffer to store current directory
 char *prompt; // global var for command prompt
 bool no_prompt;
 
-static bool dont_wait;           // flag for background execution, false by default
+static bool dont_wait = false;           // flag for background execution, false by default
 
 /* 
 function: set_shell_env
@@ -31,20 +31,21 @@ returns: void
 
 void set_shell_env(char *file_name, char *env_name){ //set SHELL environment variable to program
     
-    char *path = malloc(MAX_BUFFER*sizeof(char));
-    if(!path){
-        syserr("memory couldn't be allocated");
-    }
+    char path[MAX_BUFFER]; 
     // get path to file
-    path = realpath(file_name, path);
+
+    realpath(file_name, path);
+    if(path == NULL){
+
+        syserr("path to file couldn't be allocated to memory");
+    }
     
     // set SHELL to path to myshell
     if(setenv(env_name, path, 1)){
+
         syserr("environment variable couldn't be set");
     }
     
-    path = NULL;
-    free(path);
 
 }
 
@@ -127,7 +128,7 @@ returns: int, denotes success
 
 int check_file_type(char* file){
     // get file mode
-    struct stat stats;
+    struct stat stats = {0};
     stat(file, &stats);
     int file_mode = stats.st_mode;
 
@@ -164,30 +165,27 @@ void set_io_stream(char *file, int flags, int stream_fd){
 }
 
 /* 
-function: parse_run
+function: parse
 arguments: char** "args": a list of arguments
 description: parse arguments, looking for intent of i/o redirection
-returns: int, denotes success
+returns: char**, list of cleaned arguments
 */
 
 // based from approach seen at;
 // https://stackoverflow.com/questions/52939356/redirecting-i-o-in-a-custom-shell-program-written-in-c
 
-int parse_run(char **args){
+char **parse(char **args, int len){
     
     bool do_shift = false;
-    int saved_stdin = dup(STDIN_FILENO);
-    int saved_stdout = dup(STDOUT_FILENO);
+
 
     // assume stdin will be changed by default
     int flags = O_RDONLY, stream_fd = STDIN_FILENO;
 
     // find intent of i/o redirection
     int i = 0, j = 0;
-    char *arg;
-    while(args[i] != NULL){
-        arg = args[i];
-
+    char *arg = args[0];
+    while(i < len){
         // change stdin
         if(arg[0] == '<'){
             do_shift = true;
@@ -200,10 +198,12 @@ int parse_run(char **args){
             flags = O_WRONLY|O_CREAT;
             do_shift = true;
             
+            // overwrite file
             if (!arg[1]){
                 flags |= O_TRUNC;
             }
 
+            // append to file
             else if(arg[1] == '>'){
                 flags |= O_APPEND;
             }
@@ -211,7 +211,7 @@ int parse_run(char **args){
             // print error message if word begins with > e.g., >myfile
             else{
                 fprintf(stdout, "bad file name: %s\n", arg);
-                return -1;
+                exit(1);
             }
         }
 
@@ -223,34 +223,25 @@ int parse_run(char **args){
         
         // change i/o stream
         if (do_shift){
-            set_io_stream(args[++i], flags, stream_fd);
+            // set position to start cleaning arguments
             if (j == 0){
                 j = i;
-
             }
+            set_io_stream(args[++i], flags, stream_fd);
         }
+            
 
-        ++i;
+        arg = args[++i];
     }
 
     // clean command line by removing arrows and input/output files
     if (do_shift){
-        int k = j - 1;
+        int k = j;
         while(args[k]){
             args[k] = NULL;
             ++k;
         }
     }
 
-    fork_exec(args);
-    
-    // return stdin and stdout to their previous states
-    if (do_shift){
-        dup2(saved_stdin, STDIN_FILENO);
-        dup2(saved_stdout, STDOUT_FILENO);
-    }
-    close(saved_stdin);
-    close(saved_stdout);
-
-    return 0;
+    return args;
 }

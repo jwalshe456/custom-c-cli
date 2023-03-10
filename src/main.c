@@ -23,23 +23,22 @@ int main (int argc, char **argv) {
     extern char *prompt;
     extern bool paused;
     extern bool no_prompt;
-    bool using_batchfile;
     char buf[MAX_BUFFER];    // line buffer
     char *args[MAX_ARGS];    // pointers to arg strings
     char **arg;              // working pointer thru args
-    
+    char *env_vars[] = {"SHELL", "./manual", "MAN_DIR"};
+    int length;
     // set the shell env variable to this program
-    set_shell_env(argv[0], "SHELL");
+    set_shell_env(argv[0], env_vars[0]);
 
     // set absolute URL for directory containing man pages
-    set_shell_env("./manual", "MAN_DIR");
+    set_shell_env(env_vars[1], env_vars[2]);
 
     prompt = get_prompt();
     
     // check for batchfile, if absent prompt user for input
     if (argv[1]) {
         set_io_stream(argv[1], O_RDONLY, STDIN_FILENO);
-        using_batchfile = true;
 
     }
 
@@ -47,28 +46,29 @@ int main (int argc, char **argv) {
     while (!feof(stdin)) { 
         // if batch file is being used, 
         // or if a background process has been started
+        // or if shell is paused
         // no prompt is needed
-        if(!using_batchfile && !no_prompt){
+        if(!argv[1] && !no_prompt && !paused){
             fputs(prompt, stdout); // write prompt
         }
         no_prompt = false;
         
         // read a line
         if (fgets(buf, MAX_BUFFER, stdin)) {
-            
+            length = 0;
             arg = args;
             *arg++ = strtok(buf, SEPARATORS);
+            length++;
 
-            while ((*arg++ = strtok(NULL,SEPARATORS)));
+            while ((*arg++ = strtok(NULL,SEPARATORS))){length++;}
 
             // potential command on command line, run if not paused
             if (args[0] && !paused) {
 
                 // if command fails to run, print it out to stdout
-                if (run_command(args) != 0) {
-                    print_not_valid(args);   
-                }
+                run_command(args, length);
             }
+
 
             // if enter key is pressed, unpause shell, does nothing if already unpaused
             else if (!args[0] && paused) {
