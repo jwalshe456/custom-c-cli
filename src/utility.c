@@ -19,7 +19,7 @@ char dir_buf[MAX_BUFFER]; // buffer to store current directory
 char *prompt; // global var for command prompt
 bool no_prompt;
 
-static bool dont_wait = false;           // flag for background execution, false by default
+bool dont_wait = false;           // flag for background execution, false by default
 
 /* 
 function: set_shell_env
@@ -96,7 +96,7 @@ void fork_exec(char **args){
         case 0:
 
             if(dont_wait){
-                printf("Process %d running in background...\n", getpid());
+                fprintf(stdout, "Process %d running in background...\n", getpid());
                 fputs(prompt, stdout);
                 fflush(stdout);
             }
@@ -115,7 +115,6 @@ void fork_exec(char **args){
                 // prevents creation of zombie processes
                 signal(SIGCHLD, SIG_IGN);
             }
-
     }
 }
 
@@ -174,7 +173,7 @@ returns: char**, list of cleaned arguments
 // based from approach seen at;
 // https://stackoverflow.com/questions/52939356/redirecting-i-o-in-a-custom-shell-program-written-in-c
 
-char **parse(char **args, int len){
+char **parse(char **args, int *plen){
     
     bool do_shift = false;
 
@@ -185,11 +184,12 @@ char **parse(char **args, int len){
     // find intent of i/o redirection
     int i = 0, j = 0;
     char *arg = args[0];
+    int len = *plen;
     while(i < len){
         // change stdin
         if(arg[0] == '<'){
             do_shift = true;
-    
+            *plen-=2;
         }
 
         // change stdout
@@ -213,12 +213,14 @@ char **parse(char **args, int len){
                 fprintf(stdout, "bad file name: %s\n", arg);
                 exit(1);
             }
+            *plen-=2;
         }
 
         // background process invocation
         else if (arg[0] == '&'){
             dont_wait = true;
             args[i] = NULL;
+            *plen-=1;
         }
         
         // change i/o stream
@@ -229,7 +231,6 @@ char **parse(char **args, int len){
             }
             set_io_stream(args[++i], flags, stream_fd);
         }
-            
 
         arg = args[++i];
     }

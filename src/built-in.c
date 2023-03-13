@@ -182,10 +182,12 @@ returns: void
 
 void help(char **args, int len){
     
-    if (len == 1 || args[1] == NULL){
+    // set default value
+    if (len == 1){
         args[1] = "readme";
     }
 
+    // change file name to include path
     char *man_dir = getenv("MAN_DIR");
     int buf_len = strlen(man_dir) + strlen(args[1]) + 3;
     char buf[buf_len];
@@ -221,11 +223,7 @@ returns: void
 
 void dir(char **args, int len){
 
-    // check for remnants of i/o redirection
-    if(1 < len && args[len - 2] == NULL){
-        len -= 2;
-    }
-    
+    // set default value
     if (len == 1){
         args[1] = ".";
         len++;
@@ -299,6 +297,7 @@ returns: int, denotes success
 
 int run_command(char **args, int len){
 
+    extern bool dont_wait;
     int rv = -1;
     // save stdin and stdout in the event
     // of i/o redirection
@@ -306,7 +305,7 @@ int run_command(char **args, int len){
     int saved_stdout = dup(STDOUT_FILENO);
 
     // check i/o redirection
-    parse(args, len);
+    parse(args, &len);
 
     // if command isn't built-in
     if (!built_in(args, len)){
@@ -338,6 +337,8 @@ int run_command(char **args, int len){
     dup2(saved_stdout, STDOUT_FILENO);
     close(saved_stdin);
     close(saved_stdout);
+
+    dont_wait = false;
 
     //if not valid will return non-zero
     return rv;

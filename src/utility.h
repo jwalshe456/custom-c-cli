@@ -35,5 +35,5 @@ void syserr(char * msg);
 void fork_exec(char **args);
 int check_file_type(char* file);
 void set_io_stream(char *file, int flags, int stream_fd);
-char **parse(char **args, int len);
+char **parse(char **args, int *plen);
 
