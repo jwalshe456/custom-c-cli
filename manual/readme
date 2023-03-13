@@ -71,6 +71,11 @@ I/O REDIRECTION
 			program1 arg1 arg2 | program2
 
 
+SHELL ENVIRONMENT
+
+	Processes can access a special list of variables known as the environment vector, which contains name=value pairs.[6] An example of an environment variable is the current or previous working directory, or the home directory.[7] These pairs can be modified or new ones can be added by a process, but these changes won't persist after the program exits. This is because "the environment is not held in kernel memory but is stored in the process’s own user-mode address space as the first datum at the top of the process’s stack".[6]
+
+
 STUDENT DETAILS
 
 	Student Name: Jed Walshe
@@ -94,3 +99,8 @@ ACKNOWLEDGEMENTS
 
 	[5] - Burgess (2001), "Processes and Threads", in *A Short Introduction to Operating Systems*, ch. 6, pp. 32 (Hardback), 33 (PDF).
 	PDF available here: https://sistop.gwolf.org/html/biblio/Short_introduction_to_operating_systems_-_Mark_Burgess.pdf
+
+	[6] - Silberschatz, Gagne and Galvin (2013), "The Linux System", in *Operating System Concepts*, 9th edition, ch. 18, pp. 793 (Hardback), 817 (PDF). PDF available here https://drive.uqu.edu.sa/_/mskhayat/files/MySubjects/2017SS%20Operating%20Systems/Abraham%20Silberschatz-Operating%20System%20Concepts%20(9th,2012_12).pdf
+
+	[7] - Tanenbaum and Bos (2014), "Introduction", in *Modern Operating Systems*, 4th edition, ch. 1, pp. 56 (Hardback and PDF). 
+	PDF available here https://csc-knu.github.io/sys-prog/books/Andrew%20S.%20Tanenbaum%20-%20Modern%20Operating%20Systems.pdf
