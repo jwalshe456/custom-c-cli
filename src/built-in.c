@@ -195,21 +195,7 @@ void help(char **args, int len){
     snprintf(buf, buf_len, "%s/%s", man_dir, args[1]);
 
     char *cmds[] = {"more", "-d", buf, NULL};
-
-    pid_t p;
-    int status;
-
-    switch(p=fork()){
-
-        case -1:
-            syserr("bad fork");
-
-        case 0:
-            execvp(cmds[0], cmds);
-
-        default:
-            waitpid(p, &status, WUNTRACED);
-    }
+    fork_exec(cmds);
 }
 
 /* 
@@ -223,68 +209,27 @@ returns: void
 
 void dir(char **args, int len){
 
-    // set default value
-    if (len == 1){
-        args[1] = ".";
-        len++;
+    // ensure room for -alv and NULL pointer
+    // at end of arg list
+    char *cmds[len+3];
+    cmds[0] = "ls";
+    cmds[1] = "-alv";
+
+    // add orignal arguments to 
+    // new array
+    if(1 < len){
+        int i = 1;
+        while(i < len+1){
+            cmds[i+1] = args[i];
+            ++i;
+        }
+        cmds[i] = NULL;
+    }
+    else{
+        cmds[2] = NULL;
     }
 
-    DIR *pDir;
-    struct dirent *pDirent;
-    struct stat stats = {0};
-
-    int i = 1;
-    while(i < len){
-
-        // Ensure we can open directory.
-        pDir = opendir(args[i]);
-        if (pDir == NULL) {
-            fprintf(stdout, "\nDirectory \"%s\" doesn't exist\n", args[i++]);
-            continue;
-        }
-
-        // if more than one directory
-        // print the name of the directories
-        if(2 < len){
-            fprintf(stdout, ":::::::::::::\n");
-            fprintf(stdout, "%s\n", args[i]);
-            fprintf(stdout, ":::::::::::::\n");
-        }
-
-        char buf[MAX_BUFFER];
-
-        while ((pDirent = readdir(pDir)) != NULL) {
-            // prepend directory name to files            
-            sprintf(buf, "%s/%s", args[i], pDirent->d_name);
-            stat(buf, &stats);
-
-            // ignore current and parent directory
-            if (!strcmp(pDirent->d_name, ".") || !strcmp(pDirent->d_name, "..")){
-                continue;
-            }
-
-            // check if entry is a directory
-            // if so print it in blue
-            else if(pDirent->d_type == DT_DIR){
-                fprintf (stdout, "dir  % 6ld \e[1;34m%s\e[0m\n", stats.st_size, pDirent->d_name);
-            }
-        
-            // otherwise it's a regular file
-            else if (pDirent->d_type == DT_REG){
-                // executable files will be printed in green
-                if (stats.st_mode & S_IXUSR){
-                    fprintf (stdout, "file % 6ld \e[1;32m%s\e[0m\n", stats.st_size, pDirent->d_name);
-                }
-                else{
-                    fprintf (stdout, "file % 6ld %s\n", stats.st_size, pDirent->d_name);
-                }
-            }
-        }
-        
-        closedir (pDir);
-        ++i;
-    }
-
+    fork_exec(cmds);
 }
 
 /* 
@@ -373,19 +318,24 @@ bool built_in(char **args, int len){
     void (*pfunc3)(char**);
     
     int i = 0;
+    // loop breaks when command matches built-in or
+    // if i exceeds no of built-ins
     while (i < 8 && strcmp(args[0],func_list[i])){++i;}
     if (i < 8){
 
+        // function with one arg
         if (i == 0){
             pfunc3 = &cd;
             pfunc3(args);
         }
         
+        // function with two args
         else if (i < 4){
             pfunc1 = pfunc1_list[i-1];
             pfunc1(args, len);
         }
         
+        // function with no args
         else if (4 <= i){
             pfunc2 = pfunc2_list[i-4];
             pfunc2();
