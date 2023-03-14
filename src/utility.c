@@ -87,6 +87,9 @@ void fork_exec(char **args){
     pid_t p;
     int status;
 
+    // add path to shell as PARENT in environment
+    set_shell_env(getenv("SHELL"), "PARENT");
+
     // run commands as child process
     switch(p=fork()){
 
@@ -94,7 +97,6 @@ void fork_exec(char **args){
             syserr("bad fork");
 
         case 0:
-
             if(dont_wait){
                 fprintf(stdout, "Process %d running in background...\n", getpid());
                 fputs(prompt, stdout);
@@ -116,6 +118,8 @@ void fork_exec(char **args){
                 signal(SIGCHLD, SIG_IGN);
             }
     }
+    // no longer required to have PARENT in environment
+    unsetenv("PARENT");
 }
 
 /* 
