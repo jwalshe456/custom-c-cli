@@ -13,7 +13,6 @@ All code and text submitted is my own, unless stated otherwise, in such case it 
 // definiton of commands to be called by users
 #include <stdbool.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 // definitions for function used in "myshell",
 // implementation found in "built-in.c"
