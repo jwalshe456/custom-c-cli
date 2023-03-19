@@ -1,0 +1,109 @@
+
+COMMAND DESCRIPTIONS AND SYNTAX
+
+	UNIX commands are mostly supported, though the following commands act as aliases or differ in function from their standards:
+
+		* dir
+			SYNOPSIS
+				
+				Outputs contents of specified directory, acts as an alias for "ls -alv"
+
+
+			SYNTAX
+
+				dir [OPTIONS] [directory]
+
+				If [directory] is empty, outputs contents of current directory.
+				If there are multiple entries for [directory], each entry's contents will be displayed,
+				with each directory in alphabetical order.
+
+				[OPTIONS] are the same as those for the standard ls. As mentioned above, -a, -l and -v are
+				selected by default
+
+
+		* cd 
+			SYNOPSIS
+				Changes current working directory to specified directory
+
+
+			SYNTAX
+
+				cd [directory]
+
+				If [directory] is empty, prints current directory.
+
+
+		* environ
+			SYNOPSIS
+				prints all environment variables, acts as an alias for "env"
+
+
+			SYNTAX
+
+				environ
+
+
+		* clr
+			SYNOPSIS
+				clears the screen, acts as an alias for "clear"  
+
+		
+			SYNTAX
+				
+				clear
+
+
+		* echo 
+			SYNOPSIS
+				prints following statement to stdout
+
+
+			SYNTAX
+				
+				echo [statement]
+		
+
+
+		* pause
+			SYNOPSIS
+				ceases activity of shell until 'Enter' is pressed  
+		
+
+			SYNTAX
+
+				pause
+
+
+		* help 
+			SYNOPSIS
+				display manual pages
+
+
+			SYNTAX
+
+				help [page]
+
+				Options for [page] are:
+					- readme
+					- commands
+					- io_redirection
+					- bg_execution
+
+				If [page] is empty, defaults to readme
+		
+
+		* quit 
+			SYNOPSIS
+				exits from the program
+
+
+			SYNTAX
+
+				quit
+
+
+STUDENT DETAILS
+
+	Student Name: Jed Walshe
+	Student Number: 21338606
+	I acknowledge DCU's Academic Integrity Policy. All code and text submitted is my own, unless stated otherwise, in such case it is properly referenced.
